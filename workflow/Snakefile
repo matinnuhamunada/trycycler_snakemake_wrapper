@@ -1,9 +1,0 @@
-include: "rules/common.smk"
-
-##### Target rules #####
-rule all:
-    input:
-        'data/interim/trycycler/assembly.fasta'
-
-##### Modules #####
-include: "rules/trycycler.smk"
