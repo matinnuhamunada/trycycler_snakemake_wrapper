@@ -1,0 +1,17 @@
+name: assembly_env
+channels:
+ - conda-forge
+ - bioconda
+ - defaults
+dependencies:
+ - filtlong
+ - any2fasta
+ - porechop
+ - flye
+ - raven-assembler
+ - minimap2
+ - miniasm
+ - racon
+ - pip
+ - pip:
+    - git+https://github.com/rrwick/Minipolish.git

@@ -1,0 +1,9 @@
+include: "rules/common.smk"
+
+##### Target rules #####
+rule all:
+    input:
+        expand('data/interim/02_trycycler_cluster/cluster.yaml')
+
+##### Modules #####
+include: "rules/02_trycycler_cluster.smk"

@@ -16,6 +16,4 @@ properties:
     description: path to nanopore FASTQ directory
 required:
   - strain
-  - unit
-  - illumina_reads
   - nanopore_reads
