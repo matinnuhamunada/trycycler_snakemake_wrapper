@@ -32,9 +32,12 @@ rule cluster_dump:
         cluster_path = Path(params.cluster_path)
         clusters = {}
         for s in STRAINS:
+            contigs = {}
             strain = cluster_path / s
-            strain_cluster = [i.name for i in strain.glob('cluster_*')]
-            clusters[s] = strain_cluster
+            strain_cluster = [i for i in strain.glob('cluster*')]
+            for c in strain_cluster:
+                contigs[c.name] = [i.stem for i in c.glob('*/*.fasta')]
+            clusters[s] = contigs
 
         # write as yaml
         with open(output.yaml, 'w') as f:

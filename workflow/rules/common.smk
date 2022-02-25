@@ -38,11 +38,13 @@ def get_clusters(filepath):
     """
     Read the clusters output and return a dictionary
     """
-    with open(filepath) as file:
-        # The FullLoader parameter handles the conversion from YAML
-        # scalar values to Python the dictionary format
-        selected_cluster = yaml.load(file, Loader=yaml.FullLoader)
-    return selected_cluster
+    try:
+        with open(filepath) as file:
+            selected_cluster = yaml.load(file, Loader=yaml.FullLoader)
+        return selected_cluster
+    except FileNotFoundError as e:
+        sys.stderr.write(f"No cluster selected. The file: <{filepath}> is not a valid cluster format. Check your config.yaml.\n")
+        raise e
 
 def get_final_cluster(strain, cluster):
     """
@@ -80,8 +82,6 @@ def get_final_consensus(strain, cluster):
     """
     output = []
     for c in cluster[strain]:
-        item = f"data/interim/03_trycycler_consensus/{strain}/{c}/7_final_consensus.fasta"
+        item = f"data/interim/03_trycycler_consensus/{strain}/{c}/8_medaka.fasta"
         output.append(item)
     return output
-
-cluster = get_clusters(config["clusters"])

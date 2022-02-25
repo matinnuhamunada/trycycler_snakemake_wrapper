@@ -6,14 +6,11 @@ rule trycylcer_intermediate:
     threads: 12
     log:
         "workflow/report/logs/trycycler/trycylcer_intermediate-{cluster}-{strains}.log"
-    conda:
-        "../envs/trycycler.yaml"
+    params:
+        cluster_file = config["clusters"]
     shell:  
         """
-        cwd=$PWD
-        mkdir -p data/interim/03_trycycler_consensus/{wildcards.strains} 2>> {log}
-        (cd data/interim/03_trycycler_consensus/{wildcards.strains} && ln -s $cwd/{input.cluster} {wildcards.cluster}) 2>> {log}
-        echo $cwd/{input.cluster} > {output.reconcile}
+        python workflow/scripts/symlink_cluster.py {wildcards.strains} {wildcards.cluster} {params.cluster_file} 2>> {log}
         """ 
 
 rule trycylcer_reconcile:
@@ -31,7 +28,7 @@ rule trycylcer_reconcile:
         cluster = "data/interim/03_trycycler_consensus/{strains}/{cluster}",
     shell:  
         """
-        trycycler reconcile --reads {input.raw_reads} --cluster_dir {params.cluster} 2>> {log}
+        trycycler reconcile --threads {threads} --reads {input.raw_reads} --cluster_dir {params.cluster} 2>> {log}
         """
 
 rule trycylcer_MSA:
@@ -48,7 +45,7 @@ rule trycylcer_MSA:
         cluster = "data/interim/03_trycycler_consensus/{strains}/{cluster}",
     shell:  
         """
-        trycycler msa --cluster_dir {params.cluster}
+        trycycler msa --threads {threads} --cluster_dir {params.cluster} 2>> {log}
         """
 
 rule trycylcer_partition:
@@ -67,7 +64,7 @@ rule trycylcer_partition:
         cluster = lambda wildcards: get_final_cluster(wildcards.strains, cluster)
     shell:  
         """
-        trycycler partition --reads {input.raw_reads} --cluster_dirs {params.cluster}
+        trycycler partition --threads {threads} --reads {input.raw_reads} --cluster_dirs {params.cluster} 2>> {log}
         echo "partition success!" > {output.partition}
         """
 
@@ -84,7 +81,27 @@ rule trycylcer_consensus:
         "../envs/trycycler.yaml"
     shell:  
         """
-        trycycler consensus --cluster_dir data/interim/03_trycycler_consensus/{wildcards.strains}/{wildcards.cluster}
+        trycycler consensus --threads {threads} --cluster_dir data/interim/03_trycycler_consensus/{wildcards.strains}/{wildcards.cluster} 2>> {log}
+        """
+
+rule medaka_polish:
+    input:
+        cluster = "data/interim/03_trycycler_consensus/{strains}/{cluster}",
+        consensus = 'data/interim/03_trycycler_consensus/{strains}/{cluster}/7_final_consensus.fasta'
+    output:
+        medaka = "data/interim/03_trycycler_consensus/{strains}/{cluster}/8_medaka.fasta"
+    conda:
+        "../envs/trycycler.yaml"
+    threads: 12
+    log:
+        "workflow/report/logs/trycycler/medaka_polish-{cluster}-{strains}.log"
+    params:
+        model = 'r941_min_sup_g507'
+    shell:
+        """
+        medaka_consensus -i {input.cluster}/4_reads.fastq -d {input.consensus} -o {input.cluster}/medaka -m {params.model} -t 12 2>> {log}
+        mv {input.cluster}/medaka/consensus.fasta {input.cluster}/8_medaka.fasta
+        #rm -r {input.cluster}/medaka {input.cluster}/*.fai {input.cluster}/*.mmi 
         """
 
 rule trycylcer_concat:

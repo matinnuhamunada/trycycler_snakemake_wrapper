@@ -3,3 +3,5 @@
 # one row per sample. It can be parsed easily via pandas.
 samples: config/samples.tsv
 units: config/units.tsv
+
+clusters: "config/cluster.yaml"
