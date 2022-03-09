@@ -3,7 +3,8 @@
 [![Snakemake](https://img.shields.io/badge/snakemake-≥6.15.1-brightgreen.svg)](https://snakemake.github.io)
 
 This is an experimental snakemake workflow for trying out [trycylcer](https://github.com/rrwick/Trycycler). 
-It follow the author's instruction: https://github.com/rrwick/Trycycler/wiki
+It follow the author's instruction: https://github.com/rrwick/Trycycler/wiki, where the assembly are split into different steps.
+See [step 4](#step-4-executing-the-workflow)
 
 ## Usage
 ### Step 1: Clone the workflow
@@ -56,14 +57,22 @@ Activate the conda environment:
     conda activate snakemake
 
 #### Part 1 - Generating Assemblies
+This step generates multiple assemblies as described in: https://github.com/rrwick/Trycycler/wiki/Generating-assemblies
 
     snakemake --snakefile workflow/Snakefile-assembly --use-conda --cores <n_cores>
 
+TO DO: Generate a bandage gfa graph for each assemblies for manual curation
 #### Part 2 - Clustering Contigs
+This step clusters the assemblies into per-replicon groups as described in: https://github.com/rrwick/Trycycler/wiki/Clustering-contigs
 
     snakemake --snakefile workflow/Snakefile-cluster --use-conda --cores <n_cores>
 
+This step also generate `data/interim/02_trycycler_cluster/cluster.yaml` which should be copied to the config folder in order to proceed to the next step. NOTE: You can select or drops the bad contigs or clusters that will ber run in the next step
+
+TO DO: Generate a tree image with necessary information (size, depth) for manual curation of the clusters
 #### Part 3 - Generating Consensus
+This step summarizes step 3, 4, 5, and 6 in the Trycycler wiki and generate the consensus contig sequence as described in: https://github.com/rrwick/Trycycler/wiki/Generating-a-consensus
+
 
     snakemake --snakefile workflow/Snakefile-consensus --use-conda --cores <n_cores>
 
