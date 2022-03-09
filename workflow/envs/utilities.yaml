@@ -12,6 +12,7 @@ dependencies:
  - minimap2
  - miniasm
  - racon
+ - bandage
  - pip
  - pip:
     - git+https://github.com/rrwick/Minipolish.git
