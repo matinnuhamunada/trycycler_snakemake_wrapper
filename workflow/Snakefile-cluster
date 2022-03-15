@@ -3,7 +3,8 @@ include: "rules/common.smk"
 ##### Target rules #####
 rule all:
     input:
-        expand('data/interim/02_trycycler_cluster/cluster.yaml')
+        'data/interim/02_trycycler_cluster/cluster.yaml',
+        expand('data/processed/{strains}/02_trycycler_cluster/{strains}_cluster.png', strains=STRAINS),
 
 ##### Modules #####
 include: "rules/02_trycycler_cluster.smk"
