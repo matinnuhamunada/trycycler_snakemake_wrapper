@@ -127,7 +127,6 @@ rule draw_graph:
         graph = 'data/interim/01_trycycler_assembly/{strains}/nanopore/assemblies/assembly_{subsample}.gfa'
     output:
         graph = 'data/interim/01_trycycler_assembly/{strains}/nanopore/assemblies/assembly_{subsample}.png'
-    threads: 8
     log:
         "workflow/report/logs/01_trycycler_assembly/{strains}/bandage/{strains}_{subsample}.log"
     conda:
