@@ -1,6 +1,6 @@
 # Changelog
 
-## 1.0.0 (2022-02-25)
+## 1.0.0 (2022-04-20)
 
 
 ### Features
@@ -13,3 +13,4 @@
 ### Bug Fixes
 
 * clean files ([796bc78](https://www.github.com/matinnuhamunada/genome_assembly_tryouts/commit/796bc78a7fc392b85cbbaee8ad85d17397be7e3b))
+* correct input folder name ([cbad160](https://www.github.com/matinnuhamunada/genome_assembly_tryouts/commit/cbad1602c3f119331428f3300cf5bb2dcf29cae1))
