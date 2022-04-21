@@ -16,7 +16,7 @@ rule trycylcer_cluster:
 
 rule cluster_dump:
     input:
-        expand('data/interim/02_trycycler_cluster/{strains}', strains=STRAINS)
+        expand('data/interim/02_trycycler_cluster/{strains}', strains=STRAINS),
     output:
         yaml = 'data/interim/02_trycycler_cluster/cluster.yaml'
     log:
@@ -42,3 +42,17 @@ rule cluster_dump:
         # write as yaml
         with open(output.yaml, 'w') as f:
             yaml.dump(clusters, f, Dumper=yaml_indent_dump, default_flow_style=False)
+
+rule cluster_draw:
+    input:
+        cluster='data/interim/02_trycycler_cluster/{strains}'
+    output:
+        png = 'data/processed/{strains}/02_trycycler_cluster/{strains}_cluster.png'
+    log:
+        "workflow/report/logs/02_trycycler_cluster/draw_cluster_{strains}.log"
+    conda:
+        "../envs/R.yaml"
+    shell:
+        """
+        Rscript workflow/scripts/ggtree.R -i {input.cluster}/contigs.newick -o {output.png} 2>> {log}
+        """

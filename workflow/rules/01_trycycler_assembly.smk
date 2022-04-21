@@ -121,3 +121,17 @@ rule assemble_raven:
         """
         raven --threads {threads} --graphical-fragment-assembly {output.graph} --disable-checkpoints {input} > {output.assembly} 2>> {log}
         """
+
+rule draw_graph:
+    input:
+        graph = 'data/interim/01_trycycler_assembly/{strains}/nanopore/assemblies/assembly_{subsample}.gfa'
+    output:
+        graph = 'data/interim/01_trycycler_assembly/{strains}/nanopore/assemblies/assembly_{subsample}.png'
+    log:
+        "workflow/report/logs/01_trycycler_assembly/{strains}/bandage/{strains}_{subsample}.log"
+    conda:
+        "../envs/utilities.yaml"
+    shell:
+        """
+        Bandage image {input.graph} {output.graph} &>> {log}
+        """
