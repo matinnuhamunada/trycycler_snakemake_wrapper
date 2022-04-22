@@ -2,7 +2,7 @@ rule clean_nanopore:
     input: 
         lambda wildcards: NANOPORE[wildcards.strains]
     output:
-        'data/interim/01_trycycler_assembly/{strains}/nanopore/porechop.fq',
+        temp('data/interim/01_trycycler_assembly/{strains}/nanopore/porechop.fq'),
     conda:
         "../envs/utilities.yaml"
     threads: 4
@@ -34,7 +34,7 @@ rule subsample:
     input:
         'data/interim/01_trycycler_assembly/{strains}/nanopore/min1kb.fq'
     output:
-        expand('data/interim/01_trycycler_assembly/{{strains}}/nanopore/read_subsets/sample_{subsample}.fastq', subsample=['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12'])
+        temp(expand('data/interim/01_trycycler_assembly/{{strains}}/nanopore/read_subsets/sample_{subsample}.fastq', subsample=['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12']))
     threads: 12
     log:
         "workflow/report/logs/01_trycycler_assembly/{strains}/subsample-{strains}.log"
@@ -126,7 +126,7 @@ rule draw_graph:
     input:
         graph = 'data/interim/01_trycycler_assembly/{strains}/nanopore/assemblies/assembly_{subsample}.gfa'
     output:
-        graph = 'data/interim/01_trycycler_assembly/{strains}/nanopore/assemblies/assembly_{subsample}.png'
+        graph = 'data/processed/{strains}/01_trycycler_assembly/{subsample}_{strains}.png'
     log:
         "workflow/report/logs/01_trycycler_assembly/{strains}/bandage/{strains}_{subsample}.log"
     conda:

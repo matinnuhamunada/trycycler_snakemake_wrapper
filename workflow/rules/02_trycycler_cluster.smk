@@ -1,4 +1,4 @@
-rule trycylcer_cluster:
+rule trycycler_cluster:
     input:
         raw_reads = 'data/interim/01_trycycler_assembly/{strains}/nanopore/min1kb.fq',
         assembly = 'data/interim/01_trycycler_assembly/{strains}/nanopore/assemblies'
