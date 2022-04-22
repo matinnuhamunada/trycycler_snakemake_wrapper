@@ -6,3 +6,4 @@ channels:
 dependencies:
   - trycycler
   - medaka
+  - muscle=3.8
