@@ -7,3 +7,4 @@ dependencies:
   - trycycler
   - medaka
   - muscle=3.8
+  - biopython
