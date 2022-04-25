@@ -126,7 +126,8 @@ rule draw_graph:
     input:
         graph = 'data/interim/01_trycycler_assembly/{strains}/nanopore/assemblies/assembly_{subsample}.gfa'
     output:
-        graph = 'data/processed/{strains}/01_trycycler_assembly/{subsample}_{strains}.png'
+        graph = temp('data/processed/{strains}/01_trycycler_assembly/{subsample}_{strains}.png'),
+        gfa = 'data/processed/{strains}/01_trycycler_assembly/{strains}_{subsample}.gfa'
     log:
         "workflow/report/logs/01_trycycler_assembly/{strains}/bandage/{strains}_{subsample}.log"
     conda:
@@ -134,4 +135,21 @@ rule draw_graph:
     shell:
         """
         Bandage image {input.graph} {output.graph} &>> {log}
+        cp {input.graph} {output.gfa}
+        """
+
+rule merge_draw_graph:
+    input:
+        expand('data/processed/{{strains}}/01_trycycler_assembly/{subsample}_{{strains}}.png', subsample=['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12']),
+    output:
+        png = "data/processed/{strains}/01_trycycler_assembly/{strains}_graphs.png",
+    log:
+        "workflow/report/logs/01_trycycler_assembly/{strains}/bandage/merge_{strains}.log"
+    conda:
+        "../envs/utilities.yaml"
+    params:
+        dir = 'data/processed/{strains}/01_trycycler_assembly'
+    shell:
+        """
+        python workflow/scripts/merge_draw_graph.py {params.dir} {output}
         """

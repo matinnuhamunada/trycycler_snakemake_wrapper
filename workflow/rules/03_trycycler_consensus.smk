@@ -119,3 +119,18 @@ rule trycycler_concat:
         """
         cat {input} > {output.assembly} 2>> {log}
         """
+
+rule format_final_assembly:
+    input:
+        assembly = 'data/interim/03_trycycler_consensus/{strains}/assembly.fasta'
+    output:
+        assembly = 'data/processed/{strains}/03_trycycler_consensus/{strains}.fna'
+    threads: 1
+    log:
+        "workflow/report/logs/03_trycycler_consensus/trycycler_format_final_assembly/trycycler_format_final_assembly-{strains}.log"
+    conda:
+        "../envs/trycycler.yaml"
+    shell:
+        """
+        python workflow/scripts/format_fna.py {wildcards.strains} {input.assembly} {output.assembly} 2>> {log}
+        """

@@ -13,6 +13,7 @@ dependencies:
  - miniasm
  - racon
  - bandage
+ - matplotlib
  - pip
  - pip:
     - git+https://github.com/rrwick/Minipolish.git

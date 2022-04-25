@@ -10,7 +10,7 @@ except KeyError as e:
 ##### Target rules #####
 rule all:
     input:
-        expand('data/interim/03_trycycler_consensus/{strains}/assembly.fasta', strains=STRAINS)
+        expand('data/processed/{strains}/03_trycycler_consensus/{strains}.fna', strains=STRAINS)
 
 ##### Modules #####
 include: "rules/03_trycycler_consensus.smk"
