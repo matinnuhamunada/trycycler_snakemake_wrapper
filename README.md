@@ -1,4 +1,4 @@
-# Snakemake workflow: Trycycler Genome Assembly
+# Snakemake wrapper: Trycycler Genome Assembly
 
 [![Snakemake](https://img.shields.io/badge/snakemake-≥6.15.1-brightgreen.svg)](https://snakemake.github.io)
 
