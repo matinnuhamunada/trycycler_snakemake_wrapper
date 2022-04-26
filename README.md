@@ -2,9 +2,7 @@
 
 [![Snakemake](https://img.shields.io/badge/snakemake-≥6.15.1-brightgreen.svg)](https://snakemake.github.io)
 
-This is an experimental snakemake workflow for trying out [trycylcer](https://github.com/rrwick/Trycycler). 
-It follow the author's instruction: https://github.com/rrwick/Trycycler/wiki, where the assembly are split into different steps.
-See [step 4](#step-4-executing-the-workflow)
+This is a snakemake wrapper to run [trycylcer](https://github.com/rrwick/Trycycler). The sub-workflows are divided into three different steps, following the original author's instruction: https://github.com/rrwick/Trycycler/wiki. See [step 4](#step-4-executing-the-workflow) for how to run the subworkflows.
 
 ## Usage
 ### Step 1: Clone the workflow
