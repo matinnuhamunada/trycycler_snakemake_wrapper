@@ -8,3 +8,5 @@ dependencies:
   - medaka
   - muscle=3.8
   - biopython
+  - mash
+  - gsl=2.6

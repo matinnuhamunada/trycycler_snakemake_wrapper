@@ -1,0 +1,18 @@
+include: "rules/common.smk"
+
+try:
+    cluster = get_clusters(config["clusters"])
+except KeyError as e:
+    sys.stderr.write("No cluster selected.\n")
+    print(e)
+    raise e
+
+##### Target rules #####
+rule all:
+    input:
+        expand('data/processed/{strains}/05_unicycler/{strains}.png', strains=STRAINS),
+        expand('data/processed/{strains}/05_unicycler/{strains}.gfa', strains=STRAINS),
+        expand('data/processed/{strains}/05_unicycler/{strains}.fna', strains=STRAINS)
+
+##### Modules #####
+include: "rules/05_short_read_assembly.smk"

@@ -1,0 +1,9 @@
+name: polish_env
+channels:
+ - conda-forge
+ - bioconda
+ - defaults
+dependencies:
+ - polypolish
+ - fastp
+ - bwa

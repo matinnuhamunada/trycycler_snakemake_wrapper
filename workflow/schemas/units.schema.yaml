@@ -16,4 +16,3 @@ properties:
     description: path to nanopore FASTQ directory
 required:
   - strain
-  - nanopore_reads

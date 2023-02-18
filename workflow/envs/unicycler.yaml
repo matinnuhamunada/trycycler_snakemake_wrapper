@@ -1,0 +1,7 @@
+name: unicycler_env
+channels:
+ - conda-forge
+ - bioconda
+ - defaults
+dependencies:
+ - unicycler

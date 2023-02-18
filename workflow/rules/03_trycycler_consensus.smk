@@ -19,17 +19,18 @@ rule trycycler_reconcile:
         reconcile = 'data/interim/03_trycycler_consensus/{strains}/{cluster}_copy.log',
     output:
         reconcile = 'data/interim/03_trycycler_consensus/{strains}/{cluster}/2_all_seqs.fasta'
-    threads: 8
+    threads: 4
     log:
         "workflow/report/logs/03_trycycler_consensus/trycycler_reconcile/trycycler_reconcile-{cluster}-{strains}.log"
     conda:
         "../envs/trycycler.yaml"
     params:
         cluster = "data/interim/03_trycycler_consensus/{strains}/{cluster}",
-        max_add_seq = config['rule_params']['trycycler_reconcile']['max_add_seq']
+        max_add_seq = config['rule_params']['trycycler_reconcile']['max_add_seq'],
+        linear="--linear"
     shell:  
         """
-        trycycler reconcile --threads {threads} --reads {input.raw_reads} --cluster_dir {params.cluster} --max_add_seq {params.max_add_seq} 2>> {log}
+        trycycler reconcile --threads {threads} --reads {input.raw_reads} --cluster_dir {params.cluster} --max_add_seq {params.max_add_seq} {params.linear} 2>> {log}
         """
 
 rule trycycler_MSA:
@@ -37,7 +38,7 @@ rule trycycler_MSA:
         reconcile = 'data/interim/03_trycycler_consensus/{strains}/{cluster}/2_all_seqs.fasta'
     output:
         msa = 'data/interim/03_trycycler_consensus/{strains}/{cluster}/3_msa.fasta'
-    threads: 8
+    threads: 4
     log:
         "workflow/report/logs/03_trycycler_consensus/trycycler_MSA/trycycler_MSA-{cluster}-{strains}.log"
     conda:
@@ -56,7 +57,7 @@ rule trycycler_partition:
         raw_reads = 'data/interim/01_trycycler_assembly/{strains}/nanopore/min1kb.fq',
     output:
         partition = "data/interim/03_trycycler_consensus/{strains}/partition.log"
-    threads: 8
+    threads: 4
     log:
         "workflow/report/logs/03_trycycler_consensus/trycycler_partition/trycycler_partition_{strains}.log"
     conda:
@@ -75,14 +76,16 @@ rule trycycler_consensus:
         reconcile = 'data/interim/03_trycycler_consensus/{strains}/{cluster}_copy.log',
     output:
         consensus = 'data/interim/03_trycycler_consensus/{strains}/{cluster}/7_final_consensus.fasta'
-    threads: 8
+    threads: 4
     log:
         "workflow/report/logs/03_trycycler_consensus/trycycler_consensus/trycycler_consensus-{cluster}-{strains}.log"
     conda:
         "../envs/trycycler.yaml"
+    params:
+        linear="--linear"
     shell:  
         """
-        trycycler consensus --threads {threads} --cluster_dir data/interim/03_trycycler_consensus/{wildcards.strains}/{wildcards.cluster} 2>> {log}
+        trycycler consensus --threads {threads} --cluster_dir data/interim/03_trycycler_consensus/{wildcards.strains}/{wildcards.cluster} {params.linear} 2>> {log}
         """
 
 rule medaka_polish:
@@ -92,7 +95,7 @@ rule medaka_polish:
         medaka = "data/interim/03_trycycler_consensus/{strains}/{cluster}/8_medaka.fasta"
     conda:
         "../envs/trycycler.yaml"
-    threads: 8
+    threads: 4
     log:
         "workflow/report/logs/03_trycycler_consensus/medaka_polish/medaka_polish-{cluster}-{strains}.log"
     params:
