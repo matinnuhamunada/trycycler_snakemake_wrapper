@@ -5,3 +5,7 @@ samples: config/samples.tsv
 units: config/units.tsv
 
 clusters: "config/cluster.yaml"
+
+rule_params:
+  trycycler_reconcile:
+    max_add_seq: 1000
