@@ -61,9 +61,9 @@ p <- ggtree(tree) %<+% tree_data
 
 
 # DRAW TREE
-g <- p + geom_tiplab(offset = .005, 
-                     hjust = 0.005, 
-                     align=TRUE, 
+g <- p + geom_tiplab(#offset = .005,
+                     #hjust = 0.005,
+                     #align=TRUE,
                      size = 3.2) +
   geom_tippoint(aes(shape = cluster_name, color = cluster_name)) + 
   theme(legend.position = "right") + 
