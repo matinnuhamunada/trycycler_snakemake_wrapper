@@ -1,16 +1,25 @@
-name: R_env
+name: r_notebook
 channels:
   - conda-forge
   - bioconda
   - defaults
 dependencies:
-  - r-base
+  - jupyterlab>3
+  - ipywidgets>=7.6
+  - nbconvert
+  - pandas
+  - r-irkernel
+  - r-tidyverse
   - bioconductor-ggtree
-  - bioconductor-treeio
   - bioconductor-ggtreeextra
-  - r-ggplot2
-  - r-ape
-  - r-dplyr
+  - r-plotly
+  - r-ggstar
+  - r-repr
+  - r-irdisplay
+  - r-pbdzmq
+  - r-devtools
+  - r-phytools
+  - pandoc
+  - rpy2
+  - jupyter_contrib_nbextensions
   - r-argparser
-  - r-aplot
-  - r-tidytree
