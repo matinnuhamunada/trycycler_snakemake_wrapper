@@ -1,0 +1,9 @@
+include: "rules/common.smk"
+
+##### Target rules #####
+rule all:
+    input:
+        expand('data/processed/{strains}/00_quality_control/nanoplot', strains=STRAINS)
+
+##### Modules #####
+include: "rules/00_quality_control.smk"
