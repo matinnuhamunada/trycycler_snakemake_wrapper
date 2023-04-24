@@ -1,0 +1,10 @@
+include: "rules/common.smk"
+
+##### Target rules #####
+rule all:
+    input:
+        expand('data/interim/01_trycycler_assembly/{strains}/nanopore/assemblies/assembly_{subsample}.fasta', subsample=['flye', 'minipolish', 'raven'], strains=STRAINS),
+        expand('data/processed/{strains}/01_trycycler_assembly/{strains}_graphs_no-subsample.png', strains=STRAINS)
+
+##### Modules #####
+include: "rules/01_trycycler_assembly_2.smk"
