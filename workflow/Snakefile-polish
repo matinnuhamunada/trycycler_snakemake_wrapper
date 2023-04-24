@@ -1,0 +1,11 @@
+include: "rules/common.smk"
+
+cluster = {strain:["cluster_001"] for strain in STRAINS}
+
+##### Target rules #####
+rule all:
+    input:
+        expand('data/processed/{strains}/03_trycycler_consensus/{strains}.fna', strains=STRAINS)
+
+##### Modules #####
+include: "rules/03_polish.smk"
