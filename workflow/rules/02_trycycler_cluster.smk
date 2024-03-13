@@ -6,7 +6,7 @@ rule trycycler_cluster:
         cluster=directory('data/interim/02_trycycler_cluster/{strains}')
     threads: 12
     log:
-        "workflow/report/logs/02_trycycler_cluster/trycycler_cluster/02_trycycler_cluster-{strains}.log"
+        "logs/02_trycycler_cluster/trycycler_cluster/02_trycycler_cluster-{strains}.log"
     conda:
         "../envs/trycycler.yaml"
     shell:  
@@ -20,7 +20,7 @@ rule cluster_dump:
     output:
         yaml = 'data/interim/02_trycycler_cluster/cluster.yaml'
     log:
-        "workflow/report/logs/02_trycycler_cluster/cluster_dump/cluster_dump.log"
+        "logs/02_trycycler_cluster/cluster_dump/cluster_dump.log"
     params:
         cluster_path = 'data/interim/02_trycycler_cluster'
     run:
@@ -49,7 +49,7 @@ rule cluster_draw:
     output:
         png = 'data/processed/{strains}/02_trycycler_cluster/{strains}_cluster.png'
     log:
-        "workflow/report/logs/02_trycycler_cluster/cluster_draw/draw_cluster_{strains}.log"
+        "logs/02_trycycler_cluster/cluster_draw/draw_cluster_{strains}.log"
     conda:
         "../envs/R.yaml"
     shell:
