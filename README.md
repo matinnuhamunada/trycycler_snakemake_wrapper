@@ -60,7 +60,7 @@ Run panoptes to monitor jobs:
 
 Do a dry-run:
 
-    snakemake --snakefile workflow/Snakefile-assembly --use-conda --cores $N --wms-monitor http://127.0.0.1:5000 -n
+    snakemake --snakefile workflow/Snakefile-assembly --use-conda --cores 8 --wms-monitor http://127.0.0.1:5000 -n
 
 We can then open `http://127.0.0.1:5000` to monitor our jobs
 ![panoptes](workflow/report/figures/panoptes.png)

@@ -3,3 +3,7 @@ resources/**
 logs/**
 .snakemake
 .snakemake/**
+config/
+data/
+.panoptes.db
+Rplots.pdf
