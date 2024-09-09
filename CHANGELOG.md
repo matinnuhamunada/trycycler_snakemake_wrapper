@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.0](https://www.github.com/matinnuhamunada/trycycler_snakemake_wrapper/compare/v1.0.1...v1.1.0) (2024-09-09)
+
+
+### Features
+
+* add proksee viewer ([d03c6cc](https://www.github.com/matinnuhamunada/trycycler_snakemake_wrapper/commit/d03c6ccc8d9fc427cf45e88b0e36d21fe48e7bd9))
+
 ## 1.0.0 (2022-04-20)
 
 
