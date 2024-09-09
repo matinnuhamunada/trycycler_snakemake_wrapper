@@ -10,7 +10,11 @@ except KeyError as e:
 ##### Target rules #####
 rule all:
     input:
-        expand('data/processed/{strains}/03_trycycler_consensus/{strains}.fna', strains=STRAINS)
+        expand('data/processed/{strains}/03_trycycler_consensus/{strains}.fna', strains=STRAINS),
+        expand('data/processed/{strains}/04_final_qc/{strains}_depth.txt', strains=STRAINS),
+        expand('data/processed/{strains}/05_proksee_{strains}_output', strains=STRAINS),
 
 ##### Modules #####
 include: "rules/03_trycycler_consensus.smk"
+include: "rules/04_final_qc.smk"
+include: "rules/05_proksee.smk"
