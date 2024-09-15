@@ -20,6 +20,12 @@ wget -O data/raw/GCF_000012125/23754659.tar.gz https://bridges.monash.edu/ndownl
 ```
 ### Step 3: Configure workflow
 #### Setting Up Your Samples Information
+Copy the example template:
+
+```bash
+cp .examples/config config -r
+```
+
 Configure the workflow according to your needs via editing the files in the `config/` folder. Adjust `config.yaml` to configure the workflow execution, and `samples.tsv` to specify the strains to assemble. The file `units.tsv` contains the location of the paired illumina and nanopore reads for each strain.
 
 `samples.tsv` example:
