@@ -87,4 +87,9 @@ p2 <- ggplot(tree_data, aes(x=0, y = label, label=length)) +
 # CREATE COMPOSITE GRAPH
 p2 %>% insert_left(g, width = 2)
 
+# Save the plot as PNG
 ggsave(argv$output, dpi = 300)
+
+# Save the plot as PDF
+pdf_output <- sub("\\.png$", ".pdf", argv$output)
+ggsave(pdf_output, device = "pdf", dpi = 300)

@@ -16,7 +16,7 @@ rule trycycler_cluster:
 
 rule cluster_dump:
     input:
-        expand('data/interim/02_trycycler_cluster/{strains}', strains=STRAINS),
+        expand(rules.trycycler_cluster.output.cluster, strains=STRAINS),
     output:
         yaml = 'data/interim/02_trycycler_cluster/cluster.yaml'
     log:
@@ -45,9 +45,10 @@ rule cluster_dump:
 
 rule cluster_draw:
     input:
-        cluster='data/interim/02_trycycler_cluster/{strains}'
+        cluster=rules.trycycler_cluster.output.cluster
     output:
-        png = 'data/processed/{strains}/02_trycycler_cluster/{strains}_cluster.png'
+        png = 'data/processed/{strains}/02_trycycler_cluster/{strains}_cluster.png',
+        pdf = 'data/processed/{strains}/02_trycycler_cluster/{strains}_cluster.pdf',
     log:
         "logs/02_trycycler_cluster/cluster_draw/draw_cluster_{strains}.log"
     conda:

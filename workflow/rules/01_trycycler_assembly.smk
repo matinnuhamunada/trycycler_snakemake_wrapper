@@ -1,21 +1,6 @@
-rule clean_nanopore:
-    input: 
-        lambda wildcards: NANOPORE[wildcards.strains]
-    output:
-        temp('data/interim/01_trycycler_assembly/{strains}/nanopore/porechop.fq'),
-    conda:
-        "../envs/utilities.yaml"
-    threads: 4
-    log:
-        "logs/01_trycycler_assembly/{strains}/clean_nanopore-{strains}.log"
-    shell:
-        """
-        porechop -t {threads} -i {input} -o {output} &>> {log}
-        """
-
 rule filter_length:
     input: 
-        'data/interim/01_trycycler_assembly/{strains}/nanopore/porechop.fq',
+        lambda wildcards: NANOPORE[wildcards.strains],
     output:
         'data/interim/01_trycycler_assembly/{strains}/nanopore/min1kb.fq'
     conda:
@@ -32,7 +17,7 @@ rule filter_length:
 
 rule subsample:
     input:
-        'data/interim/01_trycycler_assembly/{strains}/nanopore/min1kb.fq'
+        rules.filter_length.output,
     output:
         temp(expand('data/interim/01_trycycler_assembly/{{strains}}/nanopore/read_subsets/sample_{subsample}.fastq', subsample=['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12']))
     threads: 12
@@ -50,7 +35,7 @@ rule subsample:
 
 rule assemble_flye:
     input:
-        'data/interim/01_trycycler_assembly/{strains}/nanopore/read_subsets/sample_{subsample}.fastq'
+        rules.subsample.output,
     output:
         assembly = 'data/interim/01_trycycler_assembly/{strains}/nanopore/assemblies/assembly_{subsample}.fasta',
         flye = directory('data/interim/01_trycycler_assembly/{strains}/nanopore/assemblies/assembly_{subsample}'),
@@ -64,14 +49,14 @@ rule assemble_flye:
         "../envs/utilities.yaml"
     shell:  
         """
-        flye --nano-raw {input} --threads {threads} --out-dir {output.flye} 2>> {log}
+        flye --nano-hq {input} --threads {threads} --out-dir {output.flye} 2>> {log}
         cp {output.flye}/assembly.fasta {output.assembly}
         cp {output.flye}/assembly_graph.gfa {output.graph}
         """
 
 rule assemble_minipolish:
     input:
-        'data/interim/01_trycycler_assembly/{strains}/nanopore/read_subsets/sample_{subsample}.fastq'
+        rules.subsample.output,
     output:
         assembly = 'data/interim/01_trycycler_assembly/{strains}/nanopore/assemblies/assembly_{subsample}.fasta',
         graph = 'data/interim/01_trycycler_assembly/{strains}/nanopore/assemblies/assembly_{subsample}.gfa'
@@ -106,7 +91,7 @@ rule assemble_minipolish:
 
 rule assemble_raven:
     input:
-        'data/interim/01_trycycler_assembly/{strains}/nanopore/read_subsets/sample_{subsample}.fastq'
+        rules.subsample.output,
     output:
         assembly = 'data/interim/01_trycycler_assembly/{strains}/nanopore/assemblies/assembly_{subsample}.fasta',
         graph = 'data/interim/01_trycycler_assembly/{strains}/nanopore/assemblies/assembly_{subsample}.gfa'

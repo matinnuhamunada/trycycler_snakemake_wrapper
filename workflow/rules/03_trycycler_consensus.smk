@@ -13,10 +13,26 @@ rule trycycler_intermediate:
         python workflow/scripts/symlink_cluster.py {wildcards.strains} {wildcards.cluster} {params.cluster_file} 2>> {log}
         """ 
 
+rule trycycler_dotplot:
+    input:
+        reconcile = 'data/interim/03_trycycler_consensus/{strains}/{cluster}_copy.log',
+    output:
+        dotplot = "data/interim/03_trycycler_consensus/{strains}/{cluster}/{cluster}_dotplot.png",
+    threads: 1
+    params:
+        cluster = "data/interim/03_trycycler_consensus/{strains}/{cluster}",
+    log:
+        "logs/03_trycycler_consensus/trycycler_intermediate/trycycler_dotplot-{cluster}-{strains}.log"
+    shell:  
+        """
+        trycycler dotplot --cluster_dir {params.cluster} 2>> {log}
+        """ 
+
 rule trycycler_reconcile:
     input:
         raw_reads = 'data/interim/01_trycycler_assembly/{strains}/nanopore/min1kb.fq',
         reconcile = 'data/interim/03_trycycler_consensus/{strains}/{cluster}_copy.log',
+        dotplot = rules.trycycler_dotplot.output.dotplot
     output:
         reconcile = 'data/interim/03_trycycler_consensus/{strains}/{cluster}/2_all_seqs.fasta'
     threads: 8
@@ -26,10 +42,11 @@ rule trycycler_reconcile:
         "../envs/trycycler.yaml"
     params:
         cluster = "data/interim/03_trycycler_consensus/{strains}/{cluster}",
-        max_add_seq = config['rule_params']['trycycler_reconcile']['max_add_seq']
+        max_add_seq = config['rule_params']['trycycler_reconcile']['max_add_seq'],
+        topology=""
     shell:  
         """
-        trycycler reconcile --threads {threads} --reads {input.raw_reads} --cluster_dir {params.cluster} --max_add_seq {params.max_add_seq} 2>> {log}
+        trycycler reconcile --threads {threads} --reads {input.raw_reads} --cluster_dir {params.cluster} --max_add_seq {params.max_add_seq} {params.topology} 2>> {log}
         """
 
 rule trycycler_MSA:
