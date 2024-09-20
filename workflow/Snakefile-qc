@@ -1,0 +1,10 @@
+include: "rules/common.smk"
+
+##### Target rules #####
+rule all:
+    input:
+        expand('data/processed/{strains}/00_raw_qc/{strains}_kraken2_report.txt', strains=STRAINS),
+        #expand("data/processed/{strains}/00_raw_qc/{strains}_nanoplot", strains=STRAINS),
+
+##### Modules #####
+include: "rules/00_raw_qc.smk"
