@@ -20,6 +20,25 @@ validate(samples, schema="../schemas/samples.schema.yaml")
 units = pd.read_table(config["units"], dtype=str).set_index(
     ["strain"], drop=False
 )
+
+# Check if 'estimated_genome_size' column exists, if not, add an empty column
+if "estimated_genome_size" not in units.columns:
+    units["estimated_genome_size"] = None
+else:
+    units["estimated_genome_size"] = units["estimated_genome_size"].replace(
+        {"": None}
+    )
+
+# Check if 'min_length' column exists, if not, add an empty column
+min_length_default = 1000 # Default value
+if "min_length" not in units.columns:
+    units["min_length"] = min_length_default
+else:
+    units["min_length"] = units["min_length"].fillna(min_length_default)
+    units["min_length"] = units["min_length"].replace(
+        {"": min_length_default}
+    )
+
 validate(units, schema="../schemas/units.schema.yaml")
 
 ##### Wildcard constraints #####

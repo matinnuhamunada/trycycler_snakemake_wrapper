@@ -4,19 +4,19 @@ rule trycycler_cluster:
         assembly = 'data/interim/01_trycycler_assembly/{strains}/nanopore/assemblies'
     output:
         cluster=directory('data/interim/02_trycycler_cluster/{strains}')
-    threads: 12
+    threads: 8
     log:
         "logs/02_trycycler_cluster/trycycler_cluster/02_trycycler_cluster-{strains}.log"
     conda:
         "../envs/trycycler.yaml"
-    shell:  
+    shell:
         """
         trycycler cluster --threads {threads} --reads {input.raw_reads} --assemblies {input.assembly}/*.fasta --out_dir {output.cluster} 2>> {log}
         """
 
 rule cluster_dump:
     input:
-        expand(rules.trycycler_cluster.output.cluster, strains=STRAINS),
+        expand('data/interim/02_trycycler_cluster/{strains}', strains=STRAINS),
     output:
         yaml = 'data/interim/02_trycycler_cluster/cluster.yaml'
     log:
@@ -27,7 +27,7 @@ rule cluster_dump:
         class yaml_indent_dump(yaml.Dumper):
             def increase_indent(self, flow=False, indentless=False):
                     return super(yaml_indent_dump, self).increase_indent(flow, False)
-            
+
         # grab all cluster
         cluster_path = Path(params.cluster_path)
         clusters = {}
@@ -45,7 +45,7 @@ rule cluster_dump:
 
 rule cluster_draw:
     input:
-        cluster=rules.trycycler_cluster.output.cluster
+        cluster='data/interim/02_trycycler_cluster/{strains}',
     output:
         png = 'data/processed/{strains}/02_trycycler_cluster/{strains}_cluster.png',
         pdf = 'data/processed/{strains}/02_trycycler_cluster/{strains}_cluster.pdf',

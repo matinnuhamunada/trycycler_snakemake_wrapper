@@ -6,7 +6,7 @@ channels:
 dependencies:
  - filtlong
  - any2fasta
- - porechop
+ - nanoplot
  - flye
  - raven-assembler
  - minimap2
@@ -14,6 +14,8 @@ dependencies:
  - racon
  - bandage
  - matplotlib
+ - kraken2
+ - samtools
  - pip
  - pip:
     - git+https://github.com/rrwick/Minipolish.git

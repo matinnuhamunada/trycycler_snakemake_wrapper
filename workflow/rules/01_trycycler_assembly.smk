@@ -1,5 +1,5 @@
 rule filter_length:
-    input: 
+    input:
         lambda wildcards: NANOPORE[wildcards.strains],
     output:
         'data/interim/01_trycycler_assembly/{strains}/nanopore/min1kb.fq'
@@ -8,16 +8,17 @@ rule filter_length:
     log:
         "logs/01_trycycler_assembly/{strains}/filter_length-{strains}.log"
     params:
-        min_length = 1000,
+        min_length = lambda wildcards: units['min_length'][wildcards.strains],
         keep_percent = 95
     shell:
         """
+        echo "Filtering reads with length less than {params.min_length}bp" >> {log}
         filtlong --min_length {params.min_length} --keep_percent {params.keep_percent} {input} > {output} 2>> {log}
         """
 
 rule subsample:
     input:
-        rules.filter_length.output,
+        'data/interim/01_trycycler_assembly/{strains}/nanopore/min1kb.fq',
     output:
         temp(expand('data/interim/01_trycycler_assembly/{{strains}}/nanopore/read_subsets/sample_{subsample}.fastq', subsample=['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12']))
     threads: 12
@@ -27,15 +28,17 @@ rule subsample:
         "../envs/trycycler.yaml"
     params:
         outdir = 'data/interim/01_trycycler_assembly/{strains}/nanopore/read_subsets/',
-        n_subsample = 12
-    shell:  
+        n_subsample = 12,
+        estimated_genome_size= lambda wildcards: f"--genome_size {units['estimated_genome_size'][wildcards.strains]}" if pd.notna(units['estimated_genome_size'][wildcards.strains]) else ""
+    shell:
         """
-        trycycler subsample --count {params.n_subsample} --threads {threads} --reads {input} --out_dir {params.outdir} 2>> {log}
+        echo "{params.estimated_genome_size}" >> {log}
+        trycycler subsample {params.estimated_genome_size} --count {params.n_subsample} --threads {threads} --reads {input} --out_dir {params.outdir} 2>> {log}
         """
 
 rule assemble_flye:
     input:
-        rules.subsample.output,
+        'data/interim/01_trycycler_assembly/{strains}/nanopore/read_subsets/sample_{subsample}.fastq',
     output:
         assembly = 'data/interim/01_trycycler_assembly/{strains}/nanopore/assemblies/assembly_{subsample}.fasta',
         flye = directory('data/interim/01_trycycler_assembly/{strains}/nanopore/assemblies/assembly_{subsample}'),
@@ -47,7 +50,7 @@ rule assemble_flye:
         subsample="|".join(['01', '04', '07', '10']),
     conda:
         "../envs/utilities.yaml"
-    shell:  
+    shell:
         """
         flye --nano-hq {input} --threads {threads} --out-dir {output.flye} 2>> {log}
         cp {output.flye}/assembly.fasta {output.assembly}
@@ -56,7 +59,7 @@ rule assemble_flye:
 
 rule assemble_minipolish:
     input:
-        rules.subsample.output,
+        'data/interim/01_trycycler_assembly/{strains}/nanopore/read_subsets/sample_{subsample}.fastq',
     output:
         assembly = 'data/interim/01_trycycler_assembly/{strains}/nanopore/assemblies/assembly_{subsample}.fasta',
         graph = 'data/interim/01_trycycler_assembly/{strains}/nanopore/assemblies/assembly_{subsample}.gfa'
@@ -67,7 +70,7 @@ rule assemble_minipolish:
         subsample="|".join(['02', '05', '08', '11']),
     conda:
         "../envs/utilities.yaml"
-    shell:  
+    shell:
         """
         # Create temporary intermediate files.
         overlaps=$(mktemp)".paf"
@@ -84,14 +87,14 @@ rule assemble_minipolish:
 
         # Convert to fasta
         any2fasta {output.graph} > {output.assembly} 2>> {log}
-        
+
         # Clean up.
         rm "$overlaps" "$unpolished_assembly"
         """
 
 rule assemble_raven:
     input:
-        rules.subsample.output,
+        'data/interim/01_trycycler_assembly/{strains}/nanopore/read_subsets/sample_{subsample}.fastq',
     output:
         assembly = 'data/interim/01_trycycler_assembly/{strains}/nanopore/assemblies/assembly_{subsample}.fasta',
         graph = 'data/interim/01_trycycler_assembly/{strains}/nanopore/assemblies/assembly_{subsample}.gfa'
@@ -102,7 +105,7 @@ rule assemble_raven:
         subsample="|".join(['03', '06', '09', '12']),
     conda:
         "../envs/utilities.yaml"
-    shell:  
+    shell:
         """
         raven --threads {threads} --graphical-fragment-assembly {output.graph} --disable-checkpoints {input} > {output.assembly} 2>> {log}
         """
