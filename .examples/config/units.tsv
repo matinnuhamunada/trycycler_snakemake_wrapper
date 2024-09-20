@@ -1,2 +1,2 @@
-strain	unit	illumina_reads	nanopore_reads
-GCF_000012125	1		data/raw/GCF_000012125
+strain	unit	illumina_reads	nanopore_reads	estimated_genome_size	min_length
+GCF_000012125	1		data/raw/GCF_000012125		
